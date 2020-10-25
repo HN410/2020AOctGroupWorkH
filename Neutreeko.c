@@ -39,6 +39,9 @@ int alphabeta(const int board[5][5], int turn, int aiColor ,int depth,
     char moveList[MAX_MOVE_N][4] = {""};
     getMoveList(board, turn, moveList);
 
+    alpha = aiColor == turn ? -MAX_EVALUATION_V : alpha;
+    beta = aiColor == turn ? beta : MAX_EVALUATION_V;
+
     int ansIndex = 0;
     int ansV = MAX_EVALUATION_V * turn * (-1);
 
