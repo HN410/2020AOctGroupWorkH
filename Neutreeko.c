@@ -38,7 +38,7 @@ void getMove(const int board[5][5], char move[4]){
 void getMoveList(const int board[5][5], const int player, char moveList[24][4]){
     //board ...盤面
     //player どっちの手番か　黒の番なら-1, 白の番なら1
-    //moveList ...可能な指し手のリストの出力
+    //moveList ...可能な指し手のリストの出力、可能な手が24個以上無いときはNUll文字列を埋める
 }
 
 int getEvaluationValue(const int board[5][5]){
