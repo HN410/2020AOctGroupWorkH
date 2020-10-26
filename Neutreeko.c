@@ -18,7 +18,8 @@ void getMoveList(const int board[BOARD_LEN][BOARD_LEN],
 int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN]);
 int hasWon(const int board[BOARD_LEN][BOARD_LEN]);
 
-
+int max(int i, int j){ return i > j ? i: j;}
+int min(int i, int j){ return i > j ? j : i;}
 
 void getBoard(const char input[], const int inputBoard[BOARD_LEN][BOARD_LEN],
  int outputBoard[BOARD_LEN][BOARD_LEN]){
@@ -96,10 +97,58 @@ void getMoveList(const int board[BOARD_LEN][BOARD_LEN], const int player, char m
     //moveList ...可能な指し手のリストの出力、可能な手が24個以上無いときはNUll文字列で埋める
 }
 
+int getPieceN(const int board[BOARD_LEN][BOARD_LEN], int direction, int color, int index){
+    //boardのある行（列, 斜め方向）にcolorの石が何個あるかを返す
+    //directionは0が縦, 1が横, 2が斜め(左上から右下）, 3が斜め（右上から左下）に対応
+    //斜めのindexはdirection=2のとき、(0, 4)=0 (0, 0)=4, (4, 0) = 8
+    //            direction=3のとき、(0, 0)=0 (0, 4) = 4 (4, 4)=8
+    int res = 0;
+    if(direction ==0){
+        for(int i0 = 0; i0 < BOARD_LEN; i0++){
+            if(board[i0][index] == color) res++;
+        }
+    }else if(direction == 1){
+        for(int i1 = 0; i1 < BOARD_LEN; i1++){
+            if(board[index][i1] == color) res++;
+        }
+    }else if(direction == 2){
+        int i2, j2;
+        i2 = max(index - BOARD_LEN + 1, 0);
+        j2 = max(BOARD_LEN -1 -index, 0);
+        for(; i2 < BOARD_LEN && j2 < BOARD_LEN;){
+            if(board[i2++][j2++] == color) res++;
+        }
+    }else{
+        int i3, j3;
+        i3 = max(index-BOARD_LEN+1, 0);
+        j3 = min(index, BOARD_LEN-1);
+        for(; i3 < BOARD_LEN && j3 >= 0;){
+            if(board[i3++][j3--] == color)res++;
+        }
+    }
+    return res;
+}
+int getConnectedPieceN(const int board[BOARD_LEN][BOARD_LEN], int isCorrumn, int index, int color){
+    //colorの石が２個以上ある行（列）で自分の石が繋がっているほどよい値を返す
+    int res = 0;
+    if(isCorrumn){
+        for(int i = 0; i < BOARD_LEN-1; i++){
+            res += board[i][index] * board[i + 1][index];
+        }
+    }
+    else{
+        for(int i = 0; i < BOARD_LEN -1; i++){
+            res += board[index][i] * board[index][i+1];
+        }
+    }
+    return res;
+}
+
 int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN]){
     //board ...盤面
     //出力は評価値
-    
+
+
 
 }
 
