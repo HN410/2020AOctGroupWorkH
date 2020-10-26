@@ -15,7 +15,7 @@ void getBoard(const char[], const int inputBoard[BOARD_LEN][BOARD_LEN],
 void getMove(const int board[BOARD_LEN][BOARD_LEN], char move[MOVE_STR_N]);
 void getMoveList(const int board[BOARD_LEN][BOARD_LEN],
      const int player, char moveList[MAX_MOVE_N][MOVE_STR_N]);
-int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN]);
+int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN], int);
 int hasWon(const int board[BOARD_LEN][BOARD_LEN]);
 
 int max(int i, int j){ return i > j ? i: j;}
@@ -41,7 +41,7 @@ int alphabeta(const int board[BOARD_LEN][BOARD_LEN], int turn, int aiColor ,int 
     if(hasWon(board))
          return MAX_EVALUATION_V * (turn * aiColor);
     if(depth == MAX_DEPTH) //ノードが葉
-         return getEvaluationValue(board);
+         return getEvaluationValue(board, aiColor);
     char moveList[MAX_MOVE_N][BOARD_LEN] = {""};
     getMoveList(board, turn, moveList);
 
@@ -144,12 +144,27 @@ int getConnectedPieceN(const int board[BOARD_LEN][BOARD_LEN], int isCorrumn, int
     return res;
 }
 
-int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN]){
+int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN], int aiColor){
     //board ...盤面
     //出力は評価値
-
-
-
+    int res = 0;
+    for(int i = 0; i < 2; i ++){ //縦横で石がどうなっているか
+        for(int j = 0; j < BOARD_LEN; j++){ 
+            int ai = getPieceN(board, i, aiColor, j);
+            int human = getPieceN(board, i, -1*aiColor, j);
+            res += pow(10, ai) - pow(10, human);
+            if(ai > 1) res += getConnectedPieceN(board, i, j, aiColor) * 10;
+            if(human > 1) res -= getConnectedPieceN(board, i, j, -1*aiColor) * 10;
+        }
+    }       
+    for(int i = 2; i < 4; i ++){ //斜めで
+        for(int j = 2; j < 7; j++){ 
+            int ai = getPieceN(board, i, aiColor, j);
+            int human = getPieceN(board, i, -1*aiColor, j);
+            res += pow(10, ai) - pow(10, human);
+        }
+    }    
+    return res;
 }
 
 int hasWon(const int board[BOARD_LEN][BOARD_LEN]){
