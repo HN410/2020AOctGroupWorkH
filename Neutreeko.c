@@ -4,26 +4,30 @@
 
 #define MAX_DEPTH 4
 #define MAX_MOVE_N 24
+#define MOVE_STR_N 5
+#define BOARD_LEN 5
 #define MAX_EVALUATION_V 10000
 #define BLACK -1
 #define WHITE 1
 
-void getBoard(const char[], const int inputBoard[5][5], int outputBoard[5][5]);
-void getMove(const int board[5][5], char move[4]);
-void getMoveList(const int board[5][5], const int player, char moveList[24][4]);
-int getEvaluationValue(const int board[5][5]);
-int hasWon(const int board[5][5]);
+void getBoard(const char[], const int inputBoard[BOARD_LEN][BOARD_LEN],
+     int outputBoard[BOARD_LEN][BOARD_LEN]);
+void getMove(const int board[BOARD_LEN][BOARD_LEN], char move[MOVE_STR_N]);
+void getMoveList(const int board[BOARD_LEN][BOARD_LEN],
+     const int player, char moveList[MAX_MOVE_N][MOVE_STR_N]);
+int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN]);
+int hasWon(const int board[BOARD_LEN][BOARD_LEN]);
 
 
 
-void getBoard(const char input[], const int inputBoard[5][5],
- int outputBoard[5][5]){
+void getBoard(const char input[], const int inputBoard[BOARD_LEN][BOARD_LEN],
+ int outputBoard[BOARD_LEN][BOARD_LEN]){
     //input ...入力文字列
     //inputBoard ...元の盤面
     //outputBoard ...出力する盤面
 }
 
-int alphabeta(const int board[5][5], int turn, int aiColor ,int depth,
+int alphabeta(const int board[BOARD_LEN][BOARD_LEN], int turn, int aiColor ,int depth,
      int alpha, int beta, char outputMove[]){
     //alphabeta法に基づくAI
     //
@@ -33,10 +37,11 @@ int alphabeta(const int board[5][5], int turn, int aiColor ,int depth,
     //depth 現在のゲーム木の深さ。根は0
     //alpha, beta alphabeta法の引数
     //outputMove 出力する手の文字列
-    
+    if(hasWon(board))
+         return MAX_EVALUATION_V * (turn * aiColor);
     if(depth == MAX_DEPTH) //ノードが葉
          return getEvaluationValue(board);
-    char moveList[MAX_MOVE_N][4] = {""};
+    char moveList[MAX_MOVE_N][BOARD_LEN] = {""};
     getMoveList(board, turn, moveList);
 
     alpha = aiColor == turn ? -MAX_EVALUATION_V : alpha;
@@ -46,7 +51,7 @@ int alphabeta(const int board[5][5], int turn, int aiColor ,int depth,
     int ansV = MAX_EVALUATION_V * turn * (-1);
 
     for(int i = 0; moveList[i][0] !='\0' && i < MAX_MOVE_N; i++){
-        int nextBoard[5][5];
+        int nextBoard[BOARD_LEN][BOARD_LEN];
         getBoard(moveList[i], board, nextBoard);
 
         int v = alphabeta(nextBoard, -1 * turn, aiColor, depth + 1, 
@@ -78,26 +83,27 @@ int alphabeta(const int board[5][5], int turn, int aiColor ,int depth,
     return ansV;
 }
 
-void getMove(const int board[5][5], int ai, char move[4]){
+void getMove(const int board[BOARD_LEN][BOARD_LEN], int ai, char move[MOVE_STR_N]){
     //board ... 盤面
     //player ...AIの色（黒石か白石か）
     //move ...出力する指し手
     alphabeta(board, ai, ai, 0, -MAX_EVALUATION_V, MAX_EVALUATION_V, move);
 }
 
-void getMoveList(const int board[5][5], const int player, char moveList[MAX_MOVE_N][4]){
+void getMoveList(const int board[BOARD_LEN][BOARD_LEN], const int player, char moveList[MAX_MOVE_N][MOVE_STR_N]){
     //board ...盤面
     //player どっちの手番か　黒の番なら-1, 白の番なら1
     //moveList ...可能な指し手のリストの出力、可能な手が24個以上無いときはNUll文字列で埋める
 }
 
-int getEvaluationValue(const int board[5][5]){
+int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN]){
     //board ...盤面
     //出力は評価値
+    
 
 }
 
-int hasWon(const int board[5][5]){
+int hasWon(const int board[BOARD_LEN][BOARD_LEN]){
     //board ...盤面
     //盤面の勝敗が決まっていれば1を返し、そうでなければ0を返す
 }
