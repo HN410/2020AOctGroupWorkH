@@ -10,7 +10,7 @@
 #define BLACK -1
 #define WHITE 1
 
-void getBoard(const char[], const int inputBoard[BOARD_LEN][BOARD_LEN],
+void getBoard(const char[MOVE_STR_N], const int inputBoard[BOARD_LEN][BOARD_LEN],
      int outputBoard[BOARD_LEN][BOARD_LEN]);
 void getMove(const int board[BOARD_LEN][BOARD_LEN], char move[MOVE_STR_N]);
 void getMoveList(const int board[BOARD_LEN][BOARD_LEN],
@@ -20,12 +20,39 @@ int hasWon(const int board[BOARD_LEN][BOARD_LEN]);
 
 int max(int i, int j){ return i > j ? i: j;}
 int min(int i, int j){ return i > j ? j : i;}
+int abs(int x) {return (x < 0)? -x: x;}
 
-void getBoard(const char input[], const int inputBoard[BOARD_LEN][BOARD_LEN],
- int outputBoard[BOARD_LEN][BOARD_LEN]){
-    //input ...入力文字列
-    //inputBoard ...元の盤面
-    //outputBoard ...出力する盤面
+void getBoard(const char input[5], const int board[BOARD_LEN][BOARD_LEN], int outputBoard[BOARD_LEN][BOARD_LEN])
+{
+	// parse the input string
+	// for rows: 1 -> 4, 2 -> 3, 3 -> 2, 4 -> 1, 5 -> 0
+	// for columns: A -> 0, B -> 1, C -> 2, D -> 3, E -> 4
+	int currR = BOARD_LEN - 1 - input[0] + 49;
+	int currC = input[1] - 65;
+	int nextR = BOARD_LEN - 1 - input[2] + 49;
+	int nextC = input[3] - 65;
+	
+	// fill new placements to outputBoard
+	for (int row = 0; row < BOARD_LEN; row++)
+	{
+		for (int col = 0; col < BOARD_LEN; col++)
+		{
+			if ((row == currR) && (col == currC))
+			{
+				outputBoard[row][col] = 0;
+			}
+			else if ((row == nextR) && (col == nextC))
+			{
+				outputBoard[row][col] = board[currR][currC];
+			}
+			else
+			{
+				outputBoard[row][col] = board[row][col];
+			}
+		}
+	}
+	
+	return;
 }
 
 int alphabeta(const int board[BOARD_LEN][BOARD_LEN], int turn, int aiColor ,int depth,
@@ -167,9 +194,53 @@ int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN], int aiColor){
     return res;
 }
 
-int hasWon(const int board[BOARD_LEN][BOARD_LEN]){
-    //board ...盤面
-    //盤面の勝敗が決まっていれば1を返し、そうでなければ0を返す
+
+int hasWon(const int board[BOARD_LEN][BOARD_LEN])
+{
+	// check pieces on the edge
+	int row5 = 0, row1 = 0, colA = 0, colE = 0;
+	// maintain 4 sliding windows with max length 3
+	// return 1 if any abs of a sum equals 3
+	int leftIdx = 0, rightIdx = 0;
+	while (rightIdx < BOARD_LEN)
+	{
+		if (rightIdx - leftIdx > 2)
+		{
+			row5 -= board[0][leftIdx];
+			row1 -= board[BOARD_LEN - 1][leftIdx];
+			colA -= board[leftIdx][0];
+			colE -= board[leftIdx][BOARD_LEN - 1];
+			leftIdx++;
+		}
+		row5 += board[0][rightIdx];
+		row1 += board[BOARD_LEN - 1][rightIdx];
+		colA += board[rightIdx][0];
+		colE += board[rightIdx][BOARD_LEN - 1];
+
+		if (abs(row5) == 3 || abs(row1) == 3 || abs(colA) == 3 || abs(colE) == 3) return 1;
+
+		rightIdx++;
+	}
+	
+	// check pieces inside
+	// return 1 if any pieces accomplished the objective
+	for (int row = 1; row < BOARD_LEN - 1; row++)
+	{
+		for (int col = 1; col < BOARD_LEN - 1; col++)
+		{
+			if (!board[row][col]) continue;
+			// horizontally got 3 same pieces connected
+			if (board[row][col] == board[row][col - 1] && board[row][col] == board[row][col + 1]) return 1;
+			// vertically got 3 same pieces connected
+			if (board[row][col] == board[row - 1][col] && board[row][col] == board[row + 1][col]) return 1;
+			// right diagonally got 3 same pieces connected
+			if (board[row][col] == board[row - 1][col - 1] && board[row][col] == board[row + 1][col + 1]) return 1;
+			// left diagonally got 3 same pieces connected
+			if (board[row][col] == board[row - 1][col + 1] && board[row][col] == board[row + 1][col - 1]) return 1;
+		}
+	}
+	
+	return 0;
 }
 
 int main(){
