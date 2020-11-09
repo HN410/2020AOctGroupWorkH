@@ -12,7 +12,7 @@
 
 void getBoard(const char[MOVE_STR_N], const int inputBoard[BOARD_LEN][BOARD_LEN],
      int outputBoard[BOARD_LEN][BOARD_LEN]);
-void getMove(const int board[BOARD_LEN][BOARD_LEN], char move[MOVE_STR_N]);
+void getMove(const int board[BOARD_LEN][BOARD_LEN],int ai , char move[MOVE_STR_N]);
 void getMoveList(const int board[BOARD_LEN][BOARD_LEN],
      const int player, char moveList[MAX_MOVE_N][MOVE_STR_N]);
 int getEvaluationValue(const int board[BOARD_LEN][BOARD_LEN], int);
