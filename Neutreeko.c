@@ -217,7 +217,7 @@ void getMoveList(const int board[BOARD_LEN][BOARD_LEN], const int player, char m
                     possible(board, i, j, direction, res);
                     // res : place you can move to (if no place → {-1,-1})
                     if (res[0] != -1){   //found possible movement?
-                        convert(res, i, j, movelist[movelist_index]);
+                        convert(res, i, j, moveList[movelist_index]);
                         movelist_index++;
                     }
                 }
