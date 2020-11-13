@@ -371,7 +371,7 @@ int main(int argc, char **argv){
 
       int flag2  = 0; //実際の指し手が可能な指し手のなかにあるかどうか
       for (int i = 0; i < MAX_MOVE_N; i++) {
-        if (input == moveList[i]) flag2 = 1;
+        if (strncmp(input, moveList[i], sizeof(char) * MOVE_STR_N) == 0) flag2 = 1;
       }
       if (flag2 == 0){ 
         //反則
