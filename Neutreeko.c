@@ -226,7 +226,7 @@ void getMoveList(const int board[BOARD_LEN][BOARD_LEN], const int player, char m
     }
     for (; movelist_index<25; movelist_index++){
         for (i=0; i<5; i++){
-            movelist[movelist_index][i] = '\0';
+            moveList[movelist_index][i] = '\0';
         }
     }
 }
@@ -351,7 +351,7 @@ int hasWon(const int board[BOARD_LEN][BOARD_LEN])
 }
 
 int main(int argc, char **argv){
-  int board[BOARD_LEN][BOARD_LEN] = {{0,WHITE,0,WHITE,0},{0,0,BLACK,0,0},{0,0,0,0,0},{0,0,WHITE,0,0},{0,BLACK,0,BLACK,0}};
+  int board[BOARD_LEN][BOARD_LEN] = {{0,BLACK,0,BLACK,0},{0,0,WHITE,0,0},{0,0,0,0,0},{0,0,BLACK,0,0},{0,WHITE,0,WHITE,0}};
   char moveList[MAX_MOVE_N][MOVE_STR_N];
   int flag = 1; //勝敗がついていないかどうか
   int win_or_lose = 0; //勝ったかどうか 勝ち：1、負け：-1、引き分け：0
