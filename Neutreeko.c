@@ -2,11 +2,11 @@
 #include <math.h>
 #include <string.h>
 
-#define MAX_DEPTH 4
+#define MAX_DEPTH 5
 #define MAX_MOVE_N 24
 #define MOVE_STR_N 5
 #define BOARD_LEN 5
-#define MAX_EVALUATION_V 10000
+#define MAX_EVALUATION_V 100000
 #define BLACK -1
 #define WHITE 1
 
@@ -67,18 +67,29 @@ int alphabeta(const int board[BOARD_LEN][BOARD_LEN], int turn, int aiColor ,int 
     //alpha, beta alphabeta法の引数
     //outputMove 出力する手の文字列
     if(hasWon(board))
-         return MAX_EVALUATION_V * (turn * aiColor);
+         return MAX_EVALUATION_V * (turn * aiColor) * (-1);
     if(depth == MAX_DEPTH) //ノードが葉
          return getEvaluationValue(board, aiColor);
     char moveList[MAX_MOVE_N][BOARD_LEN] = {""};
     getMoveList(board, turn, moveList);
 
-    alpha = aiColor == turn ? -MAX_EVALUATION_V : alpha;
-    beta = aiColor == turn ? beta : MAX_EVALUATION_V;
+    alpha = aiColor == turn ? -MAX_EVALUATION_V * 2 : alpha;
+    beta = aiColor == turn ? beta : MAX_EVALUATION_V*2 ;
 
     int ansIndex = 0;
-    int ansV = MAX_EVALUATION_V * turn * (-1);
+    int ansV = MAX_EVALUATION_V * turn * aiColor* (-1);
 
+    if(depth == 0 && aiColor == -1){
+        for(int i = 0; moveList[i][0] !='\0' && i < MAX_MOVE_N; i++){
+            int nextBoard[BOARD_LEN][BOARD_LEN];
+            getBoard(moveList[i], board, nextBoard);
+            if(hasWon(nextBoard)){
+                ansIndex = i;
+                ansV = MAX_EVALUATION_V;
+                break;
+            }
+        }
+    }
     for(int i = 0; moveList[i][0] !='\0' && i < MAX_MOVE_N; i++){
         int nextBoard[BOARD_LEN][BOARD_LEN];
         getBoard(moveList[i], board, nextBoard);
@@ -87,7 +98,7 @@ int alphabeta(const int board[BOARD_LEN][BOARD_LEN], int turn, int aiColor ,int 
                         alpha , beta, outputMove);// ノードの評価値
 
         if(turn == aiColor){
-            if(v >= beta){//beta切り
+            if(v >= beta ){//beta切り
                 ansIndex = i;
                 ansV = v;
                 break;
@@ -116,7 +127,7 @@ void getMove(const int board[BOARD_LEN][BOARD_LEN], int ai, char move[MOVE_STR_N
     //board ... 盤面
     //player ...AIの色（黒石か白石か）
     //move ...出力する指し手
-    alphabeta(board, ai, ai, 0, -MAX_EVALUATION_V, MAX_EVALUATION_V, move);
+    alphabeta(board, ai, ai, 0, -MAX_EVALUATION_V*2, MAX_EVALUATION_V*2, move);
 }
 void possible(const int board[5][5], int i, int j, int direction, int res[2]){
     // i, j : place to start moving
