@@ -26,10 +26,11 @@ void getBoard(const char input[5], const int board[BOARD_LEN][BOARD_LEN], int ou
 {
 	// parse the input string
 	// for rows: 1 -> 4, 2 -> 3, 3 -> 2, 4 -> 1, 5 -> 0
+    //                0       1       2       3       4
 	// for columns: A -> 0, B -> 1, C -> 2, D -> 3, E -> 4
-	int currR = BOARD_LEN - 1 - input[0] + 49;
+	int currR = input[0] - 49;
 	int currC = input[1] - 65;
-	int nextR = BOARD_LEN - 1 - input[2] + 49;
+	int nextR = input[2] - 49;
 	int nextC = input[3] - 65;
 	
 	// fill new placements to outputBoard
@@ -224,7 +225,7 @@ void getMoveList(const int board[BOARD_LEN][BOARD_LEN], const int player, char m
             }
         }
     }
-    for (; movelist_index<25; movelist_index++){
+    for (; movelist_index<MAX_MOVE_N; movelist_index++){
         for (i=0; i<5; i++){
             moveList[movelist_index][i] = '\0';
         }
