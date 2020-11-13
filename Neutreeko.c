@@ -164,11 +164,11 @@ void possible(const int board[5][5], int i, int j, int direction, int res[2]){
 void convert(int res[2], int i, int j, char converted_res[5])
 {
     switch (i){
-        case 0 : converted_res[0] = '0'; break;
-        case 1 : converted_res[0] = '1'; break;
-        case 2 : converted_res[0] = '2'; break;
-        case 3 : converted_res[0] = '3'; break;
-        case 4 : converted_res[0] = '4'; break;
+        case 0 : converted_res[0] = '1'; break;
+        case 1 : converted_res[0] = '2'; break;
+        case 2 : converted_res[0] = '3'; break;
+        case 3 : converted_res[0] = '4'; break;
+        case 4 : converted_res[0] = '5'; break;
     }
     switch (j){
         case 0 : converted_res[1] = 'A'; break;
@@ -178,11 +178,11 @@ void convert(int res[2], int i, int j, char converted_res[5])
         case 4 : converted_res[1] = 'E'; break;
     }
     switch (res[0]){
-        case 0 : converted_res[2] = '0'; break;
-        case 1 : converted_res[2] = '1'; break;
-        case 2 : converted_res[2] = '2'; break;
-        case 3 : converted_res[2] = '3'; break;
-        case 4 : converted_res[2] = '4'; break;
+        case 0 : converted_res[2] = '1'; break;
+        case 1 : converted_res[2] = '2'; break;
+        case 2 : converted_res[2] = '3'; break;
+        case 3 : converted_res[2] = '4'; break;
+        case 4 : converted_res[2] = '5'; break;
     }
     switch (res[1]){
         case 0 : converted_res[3] = 'A'; break;
@@ -222,6 +222,11 @@ void getMoveList(const int board[BOARD_LEN][BOARD_LEN], const int player, char m
                     }
                 }
             }
+        }
+    }
+    for (; movelist_index<25; movelist_index++){
+        for (i=0; i<5; i++){
+            movelist[movelist_index][i] = '\0';
         }
     }
 }
