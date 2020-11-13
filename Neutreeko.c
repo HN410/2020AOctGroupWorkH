@@ -345,7 +345,76 @@ int hasWon(const int board[BOARD_LEN][BOARD_LEN])
 	return 0;
 }
 
-int main(){
+int main(int argc, char **argv){
+  int board[BOARD_LEN][BOARD_LEN] = {{0,WHITE,0,WHITE,0},{0,0,BLACK,0,0},{0,0,0,0,0},{0,0,WHITE,0,0},{0,BLACK,0,BLACK,0}};
+  char moveList[MAX_MOVE_N][MOVE_STR_N];
+  int flag = 1; //勝敗がついていないかどうか
+  int win_or_lose = 0; //勝ったかどうか 勝ち：1、負け：-1、引き分け：0
+  int cnt = 0; //手数
+  int turn = *argv[1];
+  int player_color, ai_color;
+  if (turn == '0') {
+    player_color = BLACK;
+    ai_color = WHITE;
+  } else {
+    player_color = WHITE;
+    ai_color = BLACK;
+  }
+  while (flag && (cnt <= 300)) {
+    cnt++;
+    if (turn == '0'){
+      //プレイヤーの手番
+      char input[5];
+      scanf("%s", input); //プレイヤーの指し手
 
-    return 0;
-}
+      getMoveList(board, player_color, moveList); //可能な指し手
+
+      int flag2  = 0; //実際の指し手が可能な指し手のなかにあるかどうか
+      for (int i = 0; i < MAX_MOVE_N; i++) {
+        if (input == moveList[i]) flag2 = 1;
+      }
+      if (flag2 == 0){ 
+        //反則
+        flag = 0;
+        win_or_lose = -1; //プレイヤーの負け
+      }
+      else{
+        int outputBoard[BOARD_LEN][BOARD_LEN];
+        getBoard(input, board, outputBoard);
+        for (int row = 0; row < BOARD_LEN; row++){
+          for (int col = 0; col < BOARD_LEN; col++){
+            board[row][col] = outputBoard[row][col];
+          }
+        }
+        if (hasWon(board)) {
+          flag = 0;
+          win_or_lose = 1; //プレイヤーの勝ち
+        }
+      }
+      turn = '1';
+    } else {
+      //AIの手番
+      char move[MOVE_STR_N];
+      getMove(board, ai_color, move);
+      int outputBoard[BOARD_LEN][BOARD_LEN];
+      getBoard(move, board, outputBoard);
+      for (int row = 0; row < BOARD_LEN; row++){
+        for (int col = 0; col < BOARD_LEN; col++){
+          board[row][col] = outputBoard[row][col];
+        }
+      }
+      printf("%s\n", move); //AIの指し手の出力
+      if (hasWon(board)) {
+        flag = 0;
+        win_or_lose = -1; //AIの勝ち
+      }
+      turn = '0'; //手番の交代
+    }
+  }
+  switch (win_or_lose){
+        case 0 : printf("%s\n", "Draw"); break;
+        case 1 : printf("%s\n", "You Win"); break;
+        case -1 : printf("%s\n", "You Lose"); break;
+  }
+  return 0;
+} 
